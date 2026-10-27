@@ -1,134 +1,55 @@
 <!doctype html>
-<html lang="en">
+<html lang="tl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f4ecd8">
-<title>Arrow Escape</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#f1e7cf"><title>Arrow Escape</title>
 <style>
-:root{color-scheme:light;--paper:#f4ecd8;--sand:#d5c09b;--line:#b69a6e;--ink:#352b20;--muted:#78664e;--green:#438a64;--gold:#c08b36;--card:#fff9ed}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(135deg,#efe2c4,#f8f2e4 55%,#e8d5b2);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);padding:14px 10px 28px}
-.app{width:min(100%,580px);margin:auto}header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 14px}.brand{display:flex;align-items:center;gap:10px}.logo{width:42px;height:42px;border-radius:12px;background:#795c3d;color:#fff4dc;display:grid;place-items:center;font-size:26px;font-weight:900}h1{font-size:22px;line-height:1.1;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px}.pill,.tag{border:1px solid var(--line);background:#fff7e6;border-radius:999px;padding:7px 10px;font-size:12px;color:#644c30}
-.panel{background:#fff9edcc;border:1px solid #d4bd94;border-radius:17px;padding:14px;box-shadow:0 10px 26px #5a442015;margin-bottom:12px}.title{font-size:16px;margin:0 0 9px}.muted{font-size:12px;line-height:1.5;color:var(--muted)}.formrow{display:grid;gap:6px;margin:10px 0}.formrow label{font-size:12px;color:#644c30}.formrow input,.formrow select{width:100%;padding:12px;border-radius:10px;border:1px solid #c8b18a;background:#fffdf7;color:var(--ink);font:inherit}.btnrow{display:flex;gap:7px;flex-wrap:wrap}.btn{border:1px solid #c8b18a;background:#f7ebd2;color:#4c3926;padding:10px 12px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}.btn.primary{background:#795c3d;color:#fff4dc;border-color:#795c3d}.btn:disabled{opacity:.4}.hidden{display:none!important}.tabs{display:flex;gap:7px;margin-bottom:10px}.tabs .btn{flex:1;padding:10px 6px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}.stat{background:#fff7e6;border:1px solid #d7c29d;border-radius:10px;padding:8px 3px;text-align:center}.stat small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted)}.stat strong{display:block;font-size:18px;margin-top:2px}.progress{height:5px;background:#dfcfad;border-radius:10px;overflow:hidden;margin-bottom:10px}.progress>div{height:100%;background:var(--green);width:0;transition:width .2s}.board-wrap{padding:8px;background:var(--paper);border:2px solid #c9b18a;border-radius:8px;position:relative}.board{display:grid;gap:0;aspect-ratio:1;width:100%;background:var(--sand);border:1px solid var(--line);touch-action:manipulation}.tile{min-width:0;min-height:0;appearance:none;border:0;border-radius:0;background:transparent;display:grid;place-items:center;padding:0;color:#795c3d;font-size:clamp(19px,6vw,34px);font-weight:650;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}.tile:active{background:#e8d5b2;transform:scale(.94)}.tile.blocked{color:#8a7559}.tile.hinted{outline:2px solid var(--green);outline-offset:-3px;background:#cce2cb66}.tile.selected{outline:2px solid var(--gold);outline-offset:-3px}.tile.gone{visibility:hidden;pointer-events:none}.help{display:flex;gap:8px;font-size:12px;line-height:1.5;color:#644c30;margin:10px 2px}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}.actions .btn{padding:10px 5px}.message{min-height:24px;text-align:center;font-size:12px;color:var(--muted);padding-top:8px}.overlay{position:absolute;inset:8px;background:#fff9edee;border-radius:6px;display:none;align-items:center;justify-content:center;text-align:center;padding:18px;z-index:2}.overlay.show{display:flex}.overlay h2{margin:0 0 7px;font-size:25px}.overlay p{font-size:13px;color:var(--muted);margin:0 0 14px}.rankrow{display:grid;grid-template-columns:32px 1fr auto;gap:8px;align-items:center;padding:9px 2px;border-bottom:1px solid #e0cfad;font-size:13px}.rankrow:last-child{border-bottom:0}.rank{font-weight:900;color:#9a6b20}.score{font-weight:800;color:#477c5b}.footer{text-align:center;color:#8a7559;font-size:11px;margin:14px 0 0}
-@media(min-width:480px){.panel{padding:17px}.board-wrap{padding:10px}}
-</style>
-</head>
-<body>
-<main class="app">
-<header><div class="brand"><div class="logo">➜</div><div><h1>Arrow Escape</h1><div class="sub">One clear path. One clever move.</div></div></div><div class="pill" id="profilePill">Guest player</div></header>
-<section class="panel" id="loginPanel">
-<h2 class="title">Welcome, player!</h2><div class="muted">Create a local profile to start. Your save stays in this browser on this device.</div>
-<div class="formrow"><label for="playerName">Player name</label><input id="playerName" maxlength="18" placeholder="Enter a name" autocomplete="nickname"></div>
-<div class="formrow"><label for="country">Country</label><select id="country"><option value="">Choose your country</option><option>Philippines</option><option>United States</option><option>Canada</option><option>United Kingdom</option><option>India</option><option>Indonesia</option><option>Malaysia</option><option>Singapore</option><option>Australia</option><option>Japan</option><option>South Korea</option><option>Thailand</option><option>Vietnam</option><option>Brazil</option><option>Mexico</option><option>Other</option></select></div>
-<button class="btn primary" id="startBtn">Start playing →</button>
-</section>
-<div id="gameArea" class="hidden">
-<div class="tabs"><button class="btn primary" id="gameTab">🎮 Game</button><button class="btn" id="leaderTab">🏆 Scores</button><button class="btn" id="profileTab">👤 Profile</button></div>
-<section id="gamePanel" class="panel">
-<div class="stats"><div class="stat"><small>Level</small><strong id="level">1</strong></div><div class="stat"><small>Lives</small><strong id="lives">3</strong></div><div class="stat"><small>Coins</small><strong id="coins">30</strong></div><div class="stat"><small>Arrows left</small><strong id="left">16</strong></div></div>
-<div class="progress"><div id="progressBar"></div></div>
-<div class="board-wrap"><div id="board" class="board" aria-label="Arrow puzzle board"></div><div class="overlay" id="overlay"><div><h2 id="overlayTitle">Level clear!</h2><p id="overlayText">Every arrow escaped.</p><button class="btn primary" id="overlayBtn">Next level →</button></div></div></div>
-<div class="help"><span>✦</span><div><b>How to play:</b> Tap an arrow to send it in the direction it points. It escapes only when its path to the edge is clear. A blocked tap costs one life. Clear all arrows to earn coins.</div></div>
-<div class="actions"><button class="btn" id="undoBtn">↶ Undo · 2🪙</button><button class="btn" id="hintBtn">✦ Hint · 5🪙</button><button class="btn" id="shuffleBtn">🎲 Shuffle · 10🪙</button></div>
-<div class="btnrow" style="margin-top:8px"><button class="btn" id="restartBtn">↻ Restart same level</button><button class="btn" id="tutorialBtn">Tutorial</button></div>
-<div class="message" id="message" aria-live="polite">Start with an arrow that has a clear path to the edge.</div>
-</section>
-<section id="leaderPanel" class="panel hidden"><h2 class="title">🏆 Local leaderboard</h2><div class="muted">Scores are stored on this device only. This is not a global online leaderboard.</div><div id="leaderboardList" style="margin-top:10px"></div><button class="btn" id="backGameBtn" style="margin-top:10px">Back to game</button></section>
-<section id="profilePanel" class="panel hidden"><h2 class="title">Player profile</h2><div id="profileInfo"></div><div class="btnrow" style="margin-top:12px"><button class="btn" id="editProfileBtn">Change name/country</button><button class="btn" id="logoutBtn">Log out</button></div></section>
+:root{--paper:#f1e7cf;--ink:#8a7254;--blue:#398bd2}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,Arial,sans-serif}
+main{max-width:560px;margin:auto;padding:16px 10px 22px}.top{display:flex;align-items:center;gap:9px;margin:2px 0 14px}.life{font-size:32px;line-height:1;color:var(--blue);filter:drop-shadow(0 1px 0 #fff8)}.spacer{flex:1}.title{font-weight:800;font-size:18px;color:#80684b}.tiny{font-size:12px;color:#927e61}
+.frame{background:#f3ead4;padding:0;border:0;box-shadow:none}svg{display:block;width:100%;height:auto;background:#f1e7cf;touch-action:manipulation}
+.arrow{fill:none;stroke:#8a7254;stroke-width:3.6;stroke-linecap:square;stroke-linejoin:miter;marker-end:url(#head);cursor:pointer;transition:opacity .18s,stroke .18s}
+.arrow:active{stroke:#3d8fcf}.arrow.gone{opacity:0;pointer-events:none}.arrow.blocked{stroke:#a9977b}
+.controls{display:flex;gap:8px;margin-top:12px}.btn{border:1px solid #c8b895;border-radius:8px;background:#f8f0df;color:#755e42;font-weight:700;padding:10px 13px;font-size:14px}.message{min-height:22px;text-align:center;margin:9px 0 0;font-size:13px}.bottom{display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-top:6px;color:#927e61}
+</style></head>
+<body><main>
+<div class="top"><span class="life" id="l1">💧</span><span class="life" id="l2">💧</span><span class="life" id="l3">💧</span><span class="spacer"></span><span class="title">ARROW ESCAPE</span></div>
+<div class="frame">
+<svg id="board" viewBox="0 0 420 520" role="img" aria-label="Arrow maze puzzle">
+<defs><marker id="head" markerWidth="7" markerHeight="7" refX="5.4" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L6,3 L0,6 Z" fill="#8a7254"/></marker></defs>
+<g id="paths"></g></svg>
 </div>
-<section class="panel hidden" id="tutorialPanel"><h2 class="title">📘 Tutorial</h2><ol style="padding-left:20px;line-height:1.65;font-size:13px"><li>Tap an arrow whose path to the edge is clear.</li><li>Arrows blocking one another must be removed in a safe order.</li><li>You have 3 lives per level. Restarting resets the same puzzle.</li><li>Use hints for 5 coins, undo for 2 coins, or shuffle for 10 coins.</li><li>Shuffle only uses up/left arrows so the board remains solvable.</li></ol><button class="btn primary" id="tutorialDone">Got it — play!</button></section>
-<div class="footer">ARROW ESCAPE · SINGLE-FILE EDITION · LOCAL SAVE ONLY</div>
+<div class="bottom"><span id="left">Arrows left: 0</span><span id="level">Level 1</span><span id="moves">Moves: 0</span></div>
+<div class="message" id="message">Tap an arrow whose direction has a clear path out of the maze.</div>
+<div class="controls"><button class="btn" id="restart">↻ Restart</button><button class="btn" id="hint">Hint</button><button class="btn" id="new">New maze</button></div>
 </main>
 <script>
-(()=> {
-'use strict';
-const $=id=>document.getElementById(id);
-const DIRS={up:{dx:0,dy:-1,glyph:'↑'},right:{dx:1,dy:0,glyph:'→'},down:{dx:0,dy:1,glyph:'↓'},left:{dx:-1,dy:0,glyph:'←'}};
-const KEY='ae_single_v3';
-let profile=null,level=1,size=4,arrows=[],moves=0,lives=3,coins=30,clearedCount=0,history=[],hintId=null,levelStart=[],cleared=false,selectedArrow=null;
-function read(){try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch{return null}}
-function save(){if(!profile)return;try{localStorage.setItem(KEY,JSON.stringify({profile,level,size,arrows,moves,lives,coins,clearedCount,levelStart,cleared,players:getPlayers(false)}))}catch(e){$('message').textContent='Could not save: browser storage is unavailable.'}}
-function clone(list){return list.map(a=>({...a}))}
-function showOnly(id){['gamePanel','leaderPanel','profilePanel','tutorialPanel'].forEach(x=>$(x).classList.toggle('hidden',x!==id))}
-function sizeForLevel(n){return Math.min(8,4+Math.floor((n-1)/2))}
-function startProfile(name,country,restore=true){
- profile={name:name.trim().slice(0,18),country};$('loginPanel').classList.add('hidden');$('gameArea').classList.remove('hidden');$('profilePill').textContent=profile.name;
- const old=restore?read():null;
- if(old&&old.profile&&old.profile.name.toLowerCase()===profile.name.toLowerCase()&&old.profile.country===country&&Array.isArray(old.arrows)){
-  level=old.level||1;size=old.size||sizeForLevel(level);arrows=clone(old.arrows);moves=old.moves||0;lives=old.lives??3;coins=old.coins??30;clearedCount=old.clearedCount||0;levelStart=clone(old.levelStart||old.arrows);cleared=!!old.cleared;
- }else{level=1;coins=30;clearedCount=0;makeLevel(1)}
- render();renderProfile();renderLeaderboard();showOnly('gamePanel');
- if(!localStorage.getItem('ae_tutorial_seen'))showOnly('tutorialPanel');save();
-}
-$('startBtn').onclick=()=>{const n=$('playerName').value.trim(),c=$('country').value;if(!n){alert('Please enter a player name.');return}if(!c){alert('Please choose a country.');return}startProfile(n,c,true)};
-function makeLevel(n){
- level=n;size=sizeForLevel(n);moves=0;lives=3;history=[];hintId=null;selectedArrow=null;cleared=false;arrows=[];
- let id=0;
- // Each arrow points only up or left. Removing cells top-to-bottom and left-to-right is always a safe solution.
- for(let y=0;y<size;y++)for(let x=0;x<size;x++){let dir=(y===0?'left':x===0?'up':(Math.random()<.5?'up':'left'));arrows.push({id:id++,x,y,dir,alive:true})}
- levelStart=clone(arrows);$('overlay').classList.remove('show');$('message').textContent='Find an arrow with a clear path to the edge.';render();save();
-}
-function isClear(a){
- const d=DIRS[a.dir];let x=a.x+d.dx,y=a.y+d.dy;
- while(x>=0&&x<size&&y>=0&&y<size){if(arrows.some(b=>b.alive&&b.id!==a.id&&b.x===x&&b.y===y))return false;x+=d.dx;y+=d.dy}
- return true;
-}
-function render(){
- const board=$('board');board.style.gridTemplateColumns=`repeat(${size},minmax(0,1fr))`;board.innerHTML='';
- for(let y=0;y<size;y++)for(let x=0;x<size;x++){
-  const a=arrows.find(q=>q.x===x&&q.y===y),cell=document.createElement('button');cell.type='button';cell.className='tile';
-  if(!a||!a.alive){cell.classList.add('gone');cell.disabled=true}
-  else{cell.textContent=DIRS[a.dir].glyph;cell.classList.add(isClear(a)?'available':'blocked');if(a.id===hintId)cell.classList.add('hinted');if(a.id===selectedArrow)cell.classList.add('selected');cell.setAttribute('aria-label',`${a.dir} arrow ${isClear(a)?'clear':'blocked'}`);cell.onclick=()=>tapArrow(a.id)}
-  board.appendChild(cell)
- }
- updateStats();renderLeaderboard();renderProfile();
-}
-function updateStats(){
- const alive=arrows.filter(a=>a.alive).length;$('level').textContent=level;$('lives').textContent='❤️'.repeat(Math.max(0,lives))||'0';$('coins').textContent=coins;$('left').textContent=alive;$('progressBar').style.width=(arrows.length?(arrows.length-alive)/arrows.length*100:0)+'%';
- $('undoBtn').disabled=!history.length||cleared||coins<2||lives<=0;$('hintBtn').disabled=cleared||coins<5||lives<=0;$('shuffleBtn').disabled=cleared||coins<10||lives<=0;
-}
-function snapshot(){history.push({arrows:clone(arrows),moves,lives,coins,clearedCount});if(history.length>40)history.shift()}
-function tapArrow(id){
- if(cleared||lives<=0)return;const a=arrows.find(q=>q.id===id&&q.alive);if(!a)return;selectedArrow=id;
- if(!isClear(a)){lives--;if(lives<=0){$('overlayTitle').textContent='Out of lives!';$('overlayText').textContent='Try the same puzzle again.';$('overlayBtn').textContent='Restart level';$('overlay').classList.add('show');$('overlayBtn').onclick=restartSameLevel}$('message').textContent='Blocked! One life lost. Find a clear path.';render();save();return}
- snapshot();a.alive=false;moves++;clearedCount++;hintId=null;$('message').textContent='Nice move! The arrow escaped.';
- if(arrows.every(q=>!q.alive))winLevel();else{render();save()}
-}
-function winLevel(){
- cleared=true;const reward=10+level*2;coins+=reward;render();$('overlayTitle').textContent='Level clear!';$('overlayText').textContent=`All ${arrows.length} arrows escaped. You earned ${reward} coins.`;$('overlayBtn').textContent='Next level →';$('overlay').classList.add('show');$('overlayBtn').onclick=()=>makeLevel(level+1);$('message').textContent='Puzzle complete — coins earned!';save();
-}
-function restartSameLevel(){arrows=clone(levelStart);moves=0;lives=3;history=[];hintId=null;selectedArrow=null;cleared=false;$('overlay').classList.remove('show');$('message').textContent='Level restarted. Same puzzle, fresh lives.';render();save()}
-$('restartBtn').onclick=restartSameLevel;
-$('undoBtn').onclick=()=>{if(!history.length||cleared||coins<2||lives<=0)return;const s=history.pop();arrows=clone(s.arrows);moves=s.moves;lives=s.lives;clearedCount=s.clearedCount;coins-=2;hintId=null;render();save();$('message').textContent='Last successful move undone. Cost: 2 coins.'};
-$('hintBtn').onclick=()=>{if(cleared||coins<5||lives<=0)return;const a=arrows.find(q=>q.alive&&isClear(q));if(!a){$('message').textContent='No clear arrow found.';return}coins-=5;hintId=a.id;render();save();$('message').textContent='Try the highlighted arrow. Cost: 5 coins.';window.setTimeout(()=>{if(hintId===a.id){hintId=null;render()}},2200)};
-$('shuffleBtn').onclick=()=>{if(cleared||coins<10||lives<=0)return;snapshot();coins-=10;
- // Guarantee solvability: every live arrow points up or left; row-major removal is a valid escape order.
- arrows.filter(a=>a.alive).forEach(a=>a.dir=Math.random()<.5?'up':'left');hintId=null;render();save();$('message').textContent='Shuffled safely: this board still has a solution. Cost: 10 coins.'};
-$('tutorialBtn').onclick=()=>showOnly('tutorialPanel');$('tutorialDone').onclick=()=>{localStorage.setItem('ae_tutorial_seen','1');showOnly('gamePanel')};
-$('gameTab').onclick=()=>showOnly('gamePanel');$('leaderTab').onclick=()=>{renderLeaderboard();showOnly('leaderPanel')};$('profileTab').onclick=()=>{renderProfile();showOnly('profilePanel')};$('backGameBtn').onclick=()=>showOnly('gamePanel');
-function getPlayers(includeCurrent=true){
- let data=read(),list=Array.isArray(data?.players)?data.players:[];
- if(includeCurrent&&profile){const p={name:profile.name,country:profile.country,level,clearedCount,coins};const i=list.findIndex(x=>x.name.toLowerCase()===p.name.toLowerCase()&&x.country===p.country);if(i>=0)list[i]=p;else list.push(p)}
- return list.sort((a,b)=>(b.level-a.level)||(b.clearedCount-a.clearedCount)||(b.coins-a.coins)).slice(0,50)
-}
-function renderLeaderboard(){
- const box=$('leaderboardList');if(!box)return;box.innerHTML='';const list=getPlayers(true);
- if(!list.length){box.textContent='No scores yet.';return}
- list.forEach((p,i)=>{const row=document.createElement('div');row.className='rankrow';const rank=document.createElement('div');rank.className='rank';rank.textContent='#'+(i+1);const who=document.createElement('div');const name=document.createElement('div');name.textContent=p.name;const country=document.createElement('div');country.className='muted';country.textContent=p.country;who.append(name,country);const score=document.createElement('div');score.className='score';score.textContent='Lv '+p.level;row.append(rank,who,score);box.append(row)})
-}
-function renderProfile(){
- if(!profile||!$('profileInfo'))return;$('profileInfo').innerHTML='';
- [['Player',profile.name],['Country',profile.country],['Current level',level],['Arrows cleared',clearedCount],['Coins',coins]].forEach(([k,v])=>{const r=document.createElement('div');r.className='rankrow';const a=document.createElement('div');a.className='muted';a.textContent=k;const b=document.createElement('strong');b.textContent=v;r.append(a,b);$('profileInfo').append(r)})
-}
-$('editProfileBtn').onclick=()=>{const n=prompt('New player name',profile.name);if(n===null||!n.trim())return;const c=prompt('Country',profile.country);if(c===null||!c.trim())return;profile.name=n.trim().slice(0,18);profile.country=c.trim().slice(0,40);$('profilePill').textContent=profile.name;save();renderProfile();renderLeaderboard()};
-$('logoutBtn').onclick=()=>{save();profile=null;$('gameArea').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('profilePill').textContent='Guest player';showOnly('gamePanel')};
-// Keep local score records inside the same saved object.
-const originalSave=save;
-save=function(){if(!profile)return;let data=read(),players=Array.isArray(data?.players)?data.players:[];const p={name:profile.name,country:profile.country,level,clearedCount,coins};const i=players.findIndex(x=>x.name.toLowerCase()===p.name.toLowerCase()&&x.country===p.country);if(i>=0)players[i]=p;else players.push(p);try{localStorage.setItem(KEY,JSON.stringify({profile,level,size,arrows,moves,lives,coins,clearedCount,levelStart,cleared,players:players.slice(-100)}))}catch(e){$('message').textContent='Could not save progress in this browser.'}};
-const old=read();
-if(old?.profile?.name&&old?.profile?.country){profile=old.profile;startProfile(profile.name,profile.country,true)}
-else $('playerName').focus();
+(()=>{
+const svg=document.getElementById('board'), group=document.getElementById('paths');
+const NS='http://www.w3.org/2000/svg';
+let paths=[],lives=3,moves=0,level=1,history=[];
+/* Orthogonal, hand-shaped arrow paths: each ends in a real SVG arrowhead. */
+const layout=[
+[[10,32],[48,32],[48,10],[82,10]],[[18,56],[18,38],[64,38],[64,70],[112,70],[112,18],[146,18],[146,44],[130,44],[130,34],[140,34]],
+[[160,12],[160,42],[212,42],[212,22],[250,22],[250,10]],[[270,10],[270,70],[300,70],[300,32],[328,32],[328,58],[350,58],[350,18],[384,18]],
+[[10,90],[62,90],[62,110],[38,110],[38,128],[94,128],[94,96],[136,96]],[[112,76],[112,58],[178,58]],[[146,82],[146,100],[198,100],[198,78],[224,78]],[[232,92],[232,118],[270,118],[270,92],[314,92],[314,126],[386,126]],
+[[10,150],[28,150],[28,176],[14,176],[14,190],[48,190]],[[58,148],[58,168],[92,168],[92,144],[124,144],[124,190],[158,190],[158,162],[190,162]],[[200,142],[200,174],[230,174],[230,150],[254,150]],[[266,142],[266,166],[294,166],[294,144],[334,144]],[[346,150],[346,182],[386,182]],
+[[10,218],[10,202],[40,202],[40,222],[66,222],[66,202],[94,202],[94,232],[124,232],[124,208],[154,208]],[[166,202],[166,226],[196,226],[196,206],[220,206],[220,236],[252,236]],[[270,204],[270,226],[304,226],[304,202],[336,202],[336,238],[386,238]],
+[[10,258],[48,258],[48,282],[22,282]],[[62,250],[62,270],[92,270],[92,250],[120,250],[120,284],[148,284]],[[158,254],[158,278],[190,278],[190,250],[214,250]],[[226,256],[226,286],[252,286],[252,260],[282,260],[282,286],[312,286]],[[324,254],[324,276],[350,276],[350,252],[386,252]],
+[[10,316],[10,294],[34,294],[34,326],[58,326]],[[70,306],[70,326],[104,326],[104,302],[134,302],[134,336],[162,336]],[[176,300],[176,326],[204,326],[204,300],[232,300],[232,334],[260,334]],[[274,304],[274,326],[304,326],[304,300],[332,300],[332,338],[386,338]],
+[[10,364],[40,364],[40,390],[70,390],[70,364],[98,364],[98,404],[130,404]],[[142,360],[142,388],[170,388],[170,362],[202,362],[202,396],[232,396]],[[244,360],[244,390],[272,390],[272,360],[302,360],[302,400],[336,400],[336,364],[386,364]],
+[[10,432],[10,408],[38,408],[38,446],[70,446]],[[82,416],[82,438],[110,438],[110,414],[140,414],[140,454],[170,454]],[[184,412],[184,438],[212,438],[212,414],[242,414],[242,452],[270,452]],[[284,414],[284,438],[310,438],[310,414],[340,414],[340,454],[386,454]],
+[[10,488],[48,488],[48,466],[82,466],[82,496],[116,496]],[[130,480],[130,502],[162,502],[162,474],[190,474],[190,500],[218,500]],[[232,480],[232,502],[264,502],[264,478],[296,478],[296,502],[326,502]],[[340,480],[340,502],[386,502]]
+];
+function direction(p){const a=p[p.length-2],b=p[p.length-1];return Math.abs(a[0]-b[0])>Math.abs(a[1]-b[1])?(b[0]>a[0]?'right':'left'):(b[1]>a[1]?'down':'up')}
+function make(){group.innerHTML='';paths=[];lives=3;moves=0;history=[];layout.forEach((coords,i)=>{let el=document.createElementNS(NS,'polyline');el.setAttribute('points',coords.map(p=>p.join(',')).join(' '));el.setAttribute('class','arrow');el.dataset.id=i;el.dataset.dir=direction(coords);el.addEventListener('click',()=>tap(i));group.appendChild(el);paths.push({id:i,coords,el,alive:true,dir:direction(coords)})});update();msg('Tap an arrow whose path to the edge is clear.')}
+function blocked(p){let [x,y]=p.coords[p.coords.length-1],dir=p.dir;return paths.some(q=>q.alive&&q.id!==p.id&&q.coords.some(([xx,yy])=>{if(dir==='right')return Math.abs(yy-y)<3&&xx>x+2;if(dir==='left')return Math.abs(yy-y)<3&&xx<x-2;if(dir==='down')return Math.abs(xx-x)<3&&yy>y+2;return Math.abs(xx-x)<3&&yy<y-2}))}
+function tap(id){let p=paths.find(q=>q.id===id);if(!p||!p.alive)return;if(blocked(p)){lives--;update();msg('Blocked! One drop of water lost.');if(!lives)msg('Out of lives — tap Restart to try again.');return}history.push(paths.map(q=>q.alive));p.alive=false;p.el.classList.add('gone');moves++;update();if(paths.every(q=>!q.alive)){level++;msg('Puzzle cleared! Tap New maze for another level.')}else msg('Arrow escaped! Keep going.')}
+function update(){['l1','l2','l3'].forEach((id,i)=>document.getElementById(id).style.opacity=i<lives?'1':'.18');document.getElementById('left').textContent='Arrows left: '+paths.filter(p=>p.alive).length;document.getElementById('moves').textContent='Moves: '+moves;document.getElementById('level').textContent='Level '+level}
+function msg(s){document.getElementById('message').textContent=s}
+document.getElementById('restart').onclick=()=>make();
+document.getElementById('new').onclick=()=>{level++;make();document.getElementById('level').textContent='Level '+level};
+document.getElementById('hint').onclick=()=>{let p=paths.find(q=>q.alive&&!blocked(q));if(p){p.el.style.stroke='#398bd2';msg('Hint: try the blue arrow.');setTimeout(()=>{p.el.style.stroke=''},1300)}else msg('No clear arrow found — restart the puzzle.')};
+make();
 })();
-</script>
-</body>
-</html>
+</script></body></html>
