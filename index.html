@@ -1,17 +1,103 @@
-
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="0; url=arrow_escape.html">
-  <title>Arrow Escape</title>
-  <script>
-    window.location.replace("arrow_escape.html");
-  </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arrow Escape</title>
+<style>
+:root{--bg:#f3ead4;--paper:#fff9eb;--ink:#493723;--line:#856b4b;--blue:#3298e4}
+*{box-sizing:border-box}body{margin:0;padding:14px;background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif}
+main{max-width:540px;margin:auto}header,.row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+h1{font-size:23px;margin:4px 0}h2{font-size:18px;margin:5px 0 12px}.muted{font-size:12px;color:#78674e}
+.panel{background:var(--paper);border:1px solid #d5c09a;border-radius:15px;padding:14px;margin:12px 0}
+button,input{font:inherit}button{border:1px solid #c9b18a;background:#f5e8ce;color:#493723;border-radius:10px;padding:11px 13px;font-weight:700;cursor:pointer}
+button.primary{background:#795b3d;color:#fff5df;border-color:#795b3d}button:disabled{opacity:.4}
+.menu{display:grid;gap:10px;margin-top:18px}.menu button{font-size:16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.stat{text-align:center;border:1px solid #ddc9a4;background:#fff3d9;border-radius:9px;padding:8px}.stat small{display:block;font-size:10px}.stat b{display:block;font-size:18px}.drops{color:var(--blue)}
+.board{display:grid;aspect-ratio:1;gap:0;background:#e8d7b8;border:2px solid #b79a70;margin-top:12px;touch-action:manipulation}
+.tile{padding:1px;min-width:0;min-height:0;border:0;border-radius:0;background:transparent;color:var(--line);display:grid;place-items:center}
+.tile svg{width:90%;height:90%}.tile.hint{background:#bfe5ad}.tile.gone{visibility:hidden}.tile.blocked{opacity:.8}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}.actions button{padding:10px 3px;font-size:12px}
+.msg{text-align:center;min-height:32px;padding:8px 0;font-size:12px;color:#78674e}
+.hidden{display:none!important}input{width:100%;padding:10px;border:1px solid #c9b18a;border-radius:9px;margin:5px 0 10px;background:white}
+.score{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #e4d4b5;padding:9px 0;font-size:13px}
+</style>
 </head>
-<body>
-  <p>Opening Arrow Escape...</p>
-  <p><a href="arrow_escape.html">Tap here to play</a></p>
-</body>
-</html>
+<body><main>
+<header><div><h1>➜ Arrow Escape</h1><div class="muted">Random puzzles • Every level gets harder</div></div><div id="saveNote" class="muted">Ready</div></header>
+<section id="home" class="panel"><h2>Welcome!</h2><p class="muted">Tap an arrow only when its path to the outside is clear.</p>
+<div class="menu"><button class="primary" id="play">▶ PLAY</button><button id="openScores">🏆 LEADERBOARD</button><button id="openAdmin">🔐 ADMIN</button></div></section>
+<section id="game" class="panel hidden">
+<div class="stats"><div class="stat"><small>LEVEL</small><b id="level">1</b></div><div class="stat"><small>LIVES</small><b id="lives" class="drops">💧💧💧</b></div><div class="stat"><small>ARROWS LEFT</small><b id="left">25</b></div></div>
+<div id="board" class="board"></div><div class="actions"><button id="hint">💡 Hint</button><button id="undo">↶ Undo</button><button id="restart">↻ Restart</button></div>
+<div class="msg" id="msg">Remove arrows with a clear route to the edge.</div>
+<div class="row"><button id="back">⌂ Menu</button><button id="newPuzzle">🎲 New puzzle</button></div></section>
+<section id="scoresPanel" class="panel hidden"><h2>🏆 Leaderboard</h2><div id="scoreList"></div><button id="scoresBack">← Back</button></section>
+<section id="adminLogin" class="panel hidden"><h2>🔐 Admin login</h2><form id="loginForm"><label>Username<input id="adminUser" autocomplete="username" required></label><label>Password<input id="adminPass" type="password" autocomplete="current-password" required></label><button class="primary">Log in</button></form><p id="loginMsg" class="muted"></p><button id="loginBack">← Back</button></section>
+<section id="adminPanel" class="panel hidden"><h2>Admin dashboard</h2><p id="adminInfo" class="muted"></p><div id="adminScores"></div><hr>
+<h3>Change admin password</h3><form id="passwordForm"><label>Current password<input id="oldPass" type="password" required></label><label>New password (12+ characters)<input id="newPass" type="password" minlength="12" required></label><button>Change password</button></form>
+<p><button id="resetScores">🗑 Reset leaderboard</button> <button id="logout">Log out</button></p><p id="adminMsg" class="muted"></p></section>
+</main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id), names=['up','right','down','left'];
+let level=1,n=5,arrows=[],initial=[],history=[],lives=3,hinted=-1,over=false;
+const screens=['home','game','scoresPanel','adminLogin','adminPanel'];
+function show(id){screens.forEach(s=>$(s).classList.toggle('hidden',s!==id))}
+function rand(n){return Math.floor(Math.random()*n)}
+function copy(a){return a.map(x=>({...x}))}
+function dir(name){return ({up:[0,-1,-90],right:[1,0,0],down:[0,1,90],left:[-1,0,180]})[name]}
+function sizeFor(l){return Math.min(10,5+Math.floor((l-1)/2))}
+function makeLevel(l){
+ level=l;n=sizeFor(l);lives=3;history=[];hinted=-1;over=false;
+ // Retry randomized placement until every insertion has a clear direction.
+ for(let attempt=0;attempt<100;attempt++){
+  let cells=[];for(let y=0;y<n;y++)for(let x=0;x<n;x++)cells.push({x,y});
+  for(let i=cells.length-1;i>0;i--){let j=rand(i+1);[cells[i],cells[j]]=[cells[j],cells[i]]}
+  let built=[],id=1,ok=true;
+  for(const c of cells){
+   let choices=names.filter(name=>{let [dx,dy]=dir(name),x=c.x+dx,y=c.y+dy;while(x>=0&&x<n&&y>=0&&y<n){if(built.some(a=>a.x===x&&a.y===y&&a.alive))return false;x+=dx;y+=dy}return true});
+   if(!choices.length){ok=false;break}
+   built.push({id:id++,x:c.x,y:c.y,dir:choices[rand(choices.length)],alive:true});
+  }
+  if(ok){arrows=built;break}
+ }
+ if(!arrows.length){arrows=[];for(let y=0,id=1;y<n;y++)for(let x=0;x<n;x++)arrows.push({id:id++,x,y,dir:x<n/2?'left':'right',alive:true})}
+ initial=copy(arrows);$('msg').textContent='Level '+level+' — find a clear arrow.';render();show('game')
+}
+function clear(a){let [dx,dy]=dir(a.dir),x=a.x+dx,y=a.y+dy;while(x>=0&&x<n&&y>=0&&y<n){if(arrows.some(b=>b.alive&&b.id!==a.id&&b.x===x&&b.y===y))return false;x+=dx;y+=dy}return true}
+function icon(name){let angle=dir(name)[2];return '<svg viewBox="0 0 40 40"><path d="M5 20 H33 M24 11 L33 20 L24 29" transform="rotate('+angle+' 20 20)" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'}
+function render(){
+ const b=$('board');b.style.gridTemplateColumns='repeat('+n+',1fr)';b.innerHTML='';
+ for(let y=0;y<n;y++)for(let x=0;x<n;x++){
+  const a=arrows.find(q=>q.x===x&&q.y===y),el=document.createElement('button');el.className='tile';
+  if(!a||!a.alive){el.classList.add('gone');el.disabled=true}
+  else{el.innerHTML=icon(a.dir);if(a.id===hinted)el.classList.add('hint');if(!clear(a))el.classList.add('blocked');el.setAttribute('aria-label',a.dir+' arrow');el.onclick=()=>tap(a.id)}
+  b.append(el)
+ }
+ $('level').textContent=level;$('lives').textContent='💧'.repeat(lives);$('left').textContent=arrows.filter(a=>a.alive).length;$('undo').disabled=!history.length||over;
+}
+function tap(id){
+ if(over)return;let a=arrows.find(x=>x.id===id&&x.alive);if(!a)return;
+ if(!clear(a)){lives--;$('msg').textContent='Blocked! One life lost.';render();if(!lives){over=true;setTimeout(()=>{if(confirm('Out of lives. Restart this level?'))makeLevel(level);},50)}return}
+ history.push({arrows:copy(arrows),lives});if(history.length>50)history.shift();a.alive=false;hinted=-1;
+ if(arrows.every(a=>!a.alive)){over=true;$('msg').textContent='Level complete!';const score=level*100;let player=prompt('Level '+level+' complete! Name for leaderboard:','Player');if(player!==null)fetch('/api/score',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({player,level,score})}).catch(()=>{});$('msg').textContent='Level complete! Next level is harder.';setTimeout(()=>{if(confirm('Continue to level '+(level+1)+'?'))makeLevel(level+1);},150)}
+ else $('msg').textContent='Arrow escaped!';render()
+}
+$('play').onclick=()=>makeLevel(level);
+$('newPuzzle').onclick=()=>makeLevel(level);
+$('restart').onclick=()=>{arrows=copy(initial);lives=3;history=[];hinted=-1;over=false;$('msg').textContent='Same puzzle restarted.';render()};
+$('undo').onclick=()=>{if(!history.length||over)return;let s=history.pop();arrows=copy(s.arrows);lives=s.lives;hinted=-1;$('msg').textContent='Last move undone.';render()};
+$('hint').onclick=()=>{let a=arrows.find(x=>x.alive&&clear(x));if(a){hinted=a.id;$('msg').textContent='Highlighted arrow can escape.';render()}else $('msg').textContent='No clear arrow found.'};
+$('back').onclick=()=>show('home');
+async function loadScores(target){target.innerHTML='Loading...';try{let r=await fetch('/api/leaderboard'),d=await r.json();target.innerHTML='';if(!d.scores.length){target.textContent='No scores yet.';return}d.scores.forEach((s,i)=>{let row=document.createElement('div');row.className='score';let a=document.createElement('span');a.textContent=(i+1)+'. '+s.player+' — Level '+s.level;let b=document.createElement('b');b.textContent=s.score;row.append(a,b);target.append(row)})}catch{target.textContent='Cannot reach server.'}}
+$('openScores').onclick=()=>{show('scoresPanel');loadScores($('scoreList'))};$('scoresBack').onclick=()=>show('home');
+$('openAdmin').onclick=()=>show('adminLogin');$('loginBack').onclick=()=>show('home');
+$('loginForm').onsubmit=async e=>{e.preventDefault();$('loginMsg').textContent='Signing in...';try{let r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:$('adminUser').value,password:$('adminPass').value})}),d=await r.json();if(!r.ok)throw Error(d.error);show('adminPanel');loadAdmin()}catch(err){$('loginMsg').textContent=err.message}};
+async function loadAdmin(){try{let r=await fetch('/api/admin/data');if(!r.ok)throw Error('Please log in again.');let d=await r.json();$('adminInfo').textContent='Scores stored in SQLite database. Total records: '+d.total;$('adminScores').innerHTML='';d.scores.forEach(s=>{let row=document.createElement('div');row.className='score';let a=document.createElement('span');a.textContent=s.player+' · Level '+s.level+' · '+s.score;let b=document.createElement('span');b.textContent=new Date(s.created*1000).toLocaleString();row.append(a,b);$('adminScores').append(row)})}catch(e){$('adminMsg').textContent=e.message}}
+$('resetScores').onclick=async()=>{if(!confirm('Permanently clear all leaderboard scores?'))return;let r=await fetch('/api/admin/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});$('adminMsg').textContent=r.ok?'Leaderboard cleared.':'Could not clear scores.';loadAdmin()};
+$('passwordForm').onsubmit=async e=>{e.preventDefault();let r=await fetch('/api/admin/password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({old_password:$('oldPass').value,new_password:$('newPass').value})}),d=await r.json();$('adminMsg').textContent=d.message||d.error;if(r.ok)show('adminLogin')};
+$('logout').onclick=async()=>{await fetch('/api/admin/logout',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});show('home')};
+fetch('/api/admin/me').then(r=>r.json()).then(d=>{if(d.authenticated)loadAdmin()}).catch(()=>{});
+})();
+</script></body></html>
