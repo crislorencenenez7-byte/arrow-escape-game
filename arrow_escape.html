@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Arrow Escape</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#131b30;--ink:#eef5ff;--muted:#94a6c7;--cyan:#5ee7f5;--violet:#a78bfa;--good:#86efac;--danger:#fda4af;--gold:#fcd34d}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#1b2c4c 0%,var(--bg) 55%);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);display:flex;justify-content:center;padding:16px 11px 28px}
+.app{width:min(100%,560px)}header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 17px}.brand{display:flex;align-items:center;gap:10px}.logo{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#67e8f9,#818cf8);display:grid;place-items:center;color:#091224;font-size:27px;font-weight:900}h1{font-size:23px;line-height:1.1;margin:0;letter-spacing:-.6px}.sub{font-size:12px;color:var(--muted);margin-top:4px}.pill{border:1px solid #344361;background:#121a2d;color:#c8d7f2;border-radius:999px;padding:8px 10px;font-size:12px;white-space:nowrap}
+.panel{background:linear-gradient(180deg,#151f35ee,#10182bee);border:1px solid #293854;border-radius:20px;padding:14px;box-shadow:0 18px 50px #0003;margin-bottom:12px}.section-title{font-size:16px;margin:0 0 10px}.muted{color:var(--muted);font-size:12px;line-height:1.45}.formrow{display:grid;gap:6px;margin:10px 0}.formrow label{font-size:12px;color:#b8c7e2}.formrow input,.formrow select,.formrow textarea{width:100%;padding:12px;border-radius:11px;border:1px solid #344663;background:#0c1426;color:var(--ink);font:inherit;outline:none}.formrow input:focus,.formrow select:focus,.formrow textarea:focus{border-color:var(--cyan)}.btnrow{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid #334663;background:#1a2740;color:var(--ink);padding:11px 12px;border-radius:12px;font-weight:700;font-size:13px;cursor:pointer}.btn.primary{background:linear-gradient(100deg,#67e8f9,#a5b4fc);color:#10172a;border:0}.btn:disabled{opacity:.4}.hidden{display:none!important}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}.stat{background:#0c1426;border:1px solid #263550;border-radius:12px;padding:9px 4px;text-align:center}.stat small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px}.stat strong{display:block;font-size:19px;margin-top:2px}.tabs{display:flex;gap:7px;margin-bottom:12px}.tabs .btn{flex:1}.progress{height:5px;border-radius:9px;background:#26344e;overflow:hidden;margin:0 0 12px}.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:width .25s}.board-wrap{padding:9px;background:#0a1222;border:1px solid #263652;border-radius:16px;position:relative}.board{display:grid;gap:5px;aspect-ratio:1;width:100%;touch-action:manipulation}.tile{min-width:0;min-height:0;border-radius:9px;background:linear-gradient(145deg,#202e49,#17233a);border:1px solid #2b3c5b;display:grid;place-items:center;padding:0;color:var(--cyan);font-size:clamp(17px,5vw,29px);font-weight:800;cursor:pointer;transition:transform .15s,background .15s,opacity .2s;user-select:none;-webkit-tap-highlight-color:transparent}.tile:active{transform:scale(.92)}.tile.available{border-color:#5ee7f588;background:linear-gradient(145deg,#263d58,#1a2b43);box-shadow:inset 0 0 0 1px #5ee7f51c}.tile.hinted{outline:3px solid var(--good);outline-offset:1px;animation:pulse .7s ease-in-out 2}.tile.gone{visibility:hidden;pointer-events:none}.tile.blocked{color:#8192b1}.tile.selected{outline:2px solid var(--gold)}@keyframes pulse{50%{filter:brightness(1.8);transform:scale(.95)}}.help{display:flex;gap:8px;color:#b8c7e2;font-size:12px;line-height:1.45;margin:12px 2px 2px}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}.message{min-height:22px;text-align:center;font-size:12px;color:var(--muted);padding:9px 3px 0}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rankrow{display:grid;grid-template-columns:32px 1fr auto;gap:8px;align-items:center;padding:9px 2px;border-bottom:1px solid #263550;font-size:13px}.rankrow:last-child{border-bottom:0}.rank{font-weight:900;color:var(--gold)}.playercountry{color:var(--muted);font-size:11px}.score{font-weight:800;color:var(--cyan)}.notice{background:#0c1426;border:1px solid #344663;border-radius:12px;padding:11px;font-size:13px;line-height:1.45}.notice strong{color:var(--gold)}.overlay{position:absolute;inset:9px;background:#0a1222ee;backdrop-filter:blur(6px);border-radius:12px;display:none;align-items:center;justify-content:center;text-align:center;padding:18px;z-index:2}.overlay.show{display:flex}.overlay h2{margin:0 0 8px;font-size:26px}.overlay p{color:#b7c6e2;margin:0 0 16px;font-size:13px}.footer{text-align:center;color:#6f81a4;font-size:11px;margin:14px 0 0}.admin-list{max-height:220px;overflow:auto}.tag{font-size:10px;border:1px solid #3a4b69;border-radius:999px;padding:3px 7px;color:#b8c7e2}
+@media(min-width:480px){.panel{padding:17px}.board-wrap{padding:11px}.board{gap:6px}.tile{border-radius:11px}}
+</style>
+</head>
+<body>
+<main class="app">
+<header><div class="brand"><div class="logo">➜</div><div><h1>Arrow Escape</h1><div class="sub">One clear path. One clever move.</div></div></div><div class="pill" id="profilePill">Guest player</div></header>
+
+<section class="panel" id="loginPanel">
+ <h2 class="section-title">Welcome, player!</h2><div class="muted">Choose your player name and country to start your Arrow Escape journey.</div>
+ <div class="formrow"><label for="playerName">Player name</label><input id="playerName" maxlength="18" placeholder="Enter a name" autocomplete="nickname"></div>
+ <div class="formrow"><label for="country">Country</label><select id="country"><option value="">Choose your country</option><option>Philippines</option><option>United States</option><option>Canada</option><option>United Kingdom</option><option>India</option><option>Indonesia</option><option>Malaysia</option><option>Singapore</option><option>Australia</option><option>Japan</option><option>South Korea</option><option>Thailand</option><option>Vietnam</option><option>Brazil</option><option>Mexico</option><option>Other</option></select></div>
+ <button class="btn primary" id="startBtn">Start playing →</button>
+ <p class="muted">Prototype note: your profile and leaderboard are saved only in this browser on this device.</p>
+</section>
+
+<div id="gameArea" class="hidden">
+ <div class="tabs"><button class="btn primary" id="gameTab">🎮 Game</button><button class="btn" id="leaderTab">🏆 Leaderboard</button><button class="btn" id="profileTab">👤 Profile</button></div>
+ <section id="gamePanel" class="panel">
+  <div class="stats"><div class="stat"><small>Level</small><strong id="level">1</strong></div><div class="stat"><small>Lives</small><strong id="lives">3</strong></div><div class="stat"><small>Coins</small><strong id="coins">30</strong></div><div class="stat"><small>Arrows left</small><strong id="left">16</strong></div></div>
+  <div class="progress"><div id="progressBar"></div></div>
+  <div class="board-wrap"><div id="board" class="board" aria-label="Arrow puzzle board"></div><div class="overlay" id="overlay"><div><h2 id="overlayTitle">Level clear!</h2><p id="overlayText">Every arrow escaped.</p><button class="btn primary" id="overlayBtn">Next level →</button></div></div></div>
+  <div class="help"><span>✦</span><div><b style="color:var(--cyan)">How to play:</b> Tap an arrow to send it in the direction it points. It escapes only when its path to the edge is clear. Wrong taps cost one life. Clear all arrows to earn coins and advance.</div></div>
+  <div class="actions"><button class="btn" id="undoBtn">↶ Undo · 2🪙</button><button class="btn" id="hintBtn">✦ Hint · 5🪙</button><button class="btn" id="shuffleBtn">🎲 Random arrows · 10🪙</button></div>
+  <div class="btnrow" style="margin-top:8px"><button class="btn" id="restartBtn">↻ Restart level</button><button class="btn" id="tutorialBtn">Tutorial</button></div>
+  <div class="message" id="message" aria-live="polite">Start with arrows that have a clear path to the edge.</div>
+ </section>
+ <section id="leaderPanel" class="panel hidden"><h2 class="section-title">🏆 Global-style leaderboard</h2><div class="muted">Ranked by highest level, then total arrows cleared. This demo leaderboard is stored on this device only.</div><div id="leaderboardList" style="margin-top:10px"></div><button class="btn" id="backGameBtn" style="margin-top:10px">Back to game</button></section>
+ <section id="profilePanel" class="panel hidden"><h2 class="section-title">Player profile</h2><div id="profileInfo"></div><div class="btnrow" style="margin-top:12px"><button class="btn" id="editProfileBtn">Change name/country</button><button class="btn" id="logoutBtn">Log out</button></div><p class="muted">Progress stays in this browser unless you clear site data.</p></section>
+</div>
+
+<section class="panel hidden" id="tutorialPanel"><h2 class="section-title">📘 Arrow Escape Tutorial</h2><ol style="padding-left:20px;line-height:1.65;font-size:13px;color:#c8d7f2"><li>Find an arrow with an open path in the direction it points.</li><li>Tap it to make it escape. If another arrow blocks it, your tap costs one life.</li><li>You start with <b>3 lives</b>. At zero lives, restart the level to try again.</li><li>Earn coins by clearing levels. Spend 5 coins for a hint, 2 for undo, or 10 to shuffle arrow directions.</li><li>Higher levels use larger boards. Your best level and cleared-arrow score help your leaderboard rank.</li></ol><button class="btn primary" id="tutorialDone">Got it — play!</button></section>
+
+<section class="panel hidden" id="adminLoginPanel"><h2 class="section-title">Admin access</h2><div class="muted">Admin sign-in is intentionally tucked away. This client-only demo is not secure for real public administration.</div><div class="formrow"><label for="adminPassword">Admin password</label><input id="adminPassword" type="password" placeholder="Password"></div><button class="btn primary" id="adminLoginBtn">Open Admin Panel</button><button class="btn" id="adminCancelBtn">Cancel</button><div class="message" id="adminLoginMessage"></div></section>
+<section class="panel hidden" id="adminPanel"><div class="btnrow" style="justify-content:space-between;align-items:center"><h2 class="section-title">🛠 Admin Panel</h2><span class="tag">LOCAL DEMO</span></div><div class="notice"><strong>Admin mode:</strong> changes and announcements are visible only in this browser. To reach all players, this game needs a backend/server and authenticated admin accounts.</div><h3 class="section-title" style="margin-top:16px">Player records on this device</h3><div id="adminPlayers" class="admin-list"></div><h3 class="section-title" style="margin-top:16px">Announcement</h3><div class="formrow"><label for="announcementText">Message to show in game</label><textarea id="announcementText" rows="3" maxlength="240" placeholder="Write an announcement..."></textarea></div><div class="btnrow"><button class="btn primary" id="publishAnnouncement">Publish announcement</button><button class="btn" id="clearAnnouncement">Clear</button></div><div class="message" id="adminMessage"></div><h3 class="section-title" style="margin-top:16px">Current board arrows</h3><div class="muted">Select an arrow on the board to inspect it. Admin view lists all arrows, including blocked ones.</div><div id="adminArrows" class="admin-list" style="margin-top:8px"></div><div class="btnrow" style="margin-top:12px"><button class="btn" id="adminRefresh">Refresh lists</button><button class="btn" id="adminLogout">Close Admin Panel</button></div></section>
+<div id="announcementBanner" class="panel hidden"></div>
+<div class="footer">ARROW ESCAPE · ORIGINAL PUZZLE PROTOTYPE · <span id="versionTap" title="Admin access">v0.2</span></div>
+</main>
+<script>
+(() => {
+ const $=id=>document.getElementById(id);
+ const DIRS={up:{dx:0,dy:-1,glyph:'↑'},right:{dx:1,dy:0,glyph:'→'},down:{dx:0,dy:1,glyph:'↓'},left:{dx:-1,dy:0,glyph:'←'}};
+ const KEYS={profile:'ae_profile_v2',score:'ae_score_v2',best:'ae_best_v2',announcement:'ae_announcement_v2'};
+ // Demo password only. Replace with server-side authentication before publishing publicly.
+ const ADMIN_PASSWORD='DISABLED_UNTIL_SERVER_AUTH';
+ let profile=null,level=1,size=4,arrows=[],moves=0,lives=3,coins=30,clearedCount=0,history=[],hintId=null,levelStart=null,cleared=false,adminMode=false,selectedArrow=null;
+ const saved=key=>{try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}};
+ function persist(){if(!profile)return;localStorage.setItem(KEYS.profile,JSON.stringify(profile));localStorage.setItem(KEYS.score,JSON.stringify({level,coins,clearedCount,lives}));}
+ function showOnly(which){['gamePanel','leaderPanel','profilePanel','tutorialPanel','adminLoginPanel','adminPanel'].forEach(id=>$(id).classList.toggle('hidden',id!==which));}
+ function startProfile(name,country){
+  profile={name:name.trim().slice(0,18),country};const old=saved(KEYS.score);level=old?.level||1;coins=old?.coins??30;clearedCount=old?.clearedCount||0;lives=3;
+  $('loginPanel').classList.add('hidden');$('gameArea').classList.remove('hidden');$('profilePill').textContent=profile.name;
+  makeLevel(level);showAnnouncement();showOnly('gamePanel');renderProfile();renderLeaderboard();
+  if(!localStorage.getItem('ae_tutorial_seen')){showOnly('tutorialPanel');}
+  persist();
+ }
+ $('startBtn').onclick=()=>{let n=$('playerName').value.trim(),c=$('country').value;if(!n){alert('Please enter a player name.');return}if(!c){alert('Please choose your country.');return}startProfile(n,c)};
+ function sizeForLevel(n){return Math.min(7,4+Math.floor((n-1)/2))}
+ function makeLevel(n){
+  level=n;size=sizeForLevel(n);moves=0;lives=3;history=[];hintId=null;selectedArrow=null;cleared=false;arrows=[];
+  // Solvable base pattern: arrows point toward top/left edges.
+  let id=0;for(let y=0;y<size;y++)for(let x=0;x<size;x++){let dir=y===0?'left':x===0?'up':(Math.random()<.5?'up':'left');arrows.push({id:id++,x,y,dir,alive:true})}
+  levelStart=cloneArrows();$('overlay').classList.remove('show');render();updateStats();renderAdminArrows();
+  $('message').textContent='Find an arrow with a clear path to the edge.';persist();
+ }
+ function cloneArrows(){return arrows.map(a=>({...a}))}
+ function isClear(a){let d=DIRS[a.dir],x=a.x+d.dx,y=a.y+d.dy;while(x>=0&&x<size&&y>=0&&y<size){if(arrows.some(b=>b.alive&&b.id!==a.id&&b.x===x&&b.y===y))return false;x+=d.dx;y+=d.dy}return true}
+ function render(){
+  const board=$('board');board.style.gridTemplateColumns=`repeat(${size},minmax(0,1fr))`;board.innerHTML='';
+  for(let y=0;y<size;y++)for(let x=0;x<size;x++){let a=arrows.find(q=>q.x===x&&q.y===y),cell=document.createElement('button');cell.type='button';cell.className='tile';
+   if(!a||!a.alive){cell.classList.add('gone');cell.disabled=true}else{cell.textContent=DIRS[a.dir].glyph;cell.classList.add(isClear(a)?'available':'blocked');if(a.id===hintId)cell.classList.add('hinted');if(a.id===selectedArrow)cell.classList.add('selected');cell.setAttribute('aria-label',`${a.dir} arrow ${isClear(a)?'clear':'blocked'}`);cell.onclick=()=>tapArrow(a.id)}
+   board.appendChild(cell)
+  }
+  updateStats();renderAdminArrows();
+ }
+ function updateStats(){let alive=arrows.filter(a=>a.alive).length;$('level').textContent=level;$('lives').textContent='❤️'.repeat(lives)||'0';$('coins').textContent=coins;$('left').textContent=alive;$('progressBar').style.width=((arrows.length-alive)/arrows.length*100)+'%';$('undoBtn').disabled=!history.length||cleared||coins<2;$('hintBtn').disabled=cleared||coins<5;$('shuffleBtn').disabled=cleared||coins<10}
+ function snapshot(){history.push({arrows:cloneArrows(),moves,lives,coins,clearedCount});if(history.length>40)history.shift()}
+ function tapArrow(id){if(cleared||lives<=0)return;let a=arrows.find(q=>q.id===id&&q.alive);if(!a)return;selectedArrow=id;
+  if(!isClear(a)){lives--; $('message').textContent='Blocked! You lost one life. Look for a clear path.';if(lives<=0){$('overlayTitle').textContent='Out of lives!';$('overlayText').textContent='Restart this level and try a different order.';$('overlayBtn').textContent='Try again';$('overlay').classList.add('show');$('overlayBtn').onclick=()=>makeLevel(level)}render();persist();return}
+  snapshot();a.alive=false;moves++;clearedCount++;hintId=null;$('message').textContent='Nice move! The arrow escaped.';if(arrows.every(q=>!q.alive))winLevel();else{render();persist()}
+ }
+ function winLevel(){cleared=true;coins+=10+level*2;render();$('overlayTitle').textContent='Level clear!';$('overlayText').textContent=`All ${arrows.length} arrows escaped in ${moves} successful moves. You earned ${10+level*2} coins!`;$('overlayBtn').textContent='Next level →';$('overlay').classList.add('show');$('overlayBtn').onclick=()=>makeLevel(level+1);$('message').textContent='Puzzle complete — coins earned!';persist();renderLeaderboard()}
+ $('undoBtn').onclick=()=>{if(!history.length||cleared||coins<2)return;let s=history.pop();arrows=s.arrows.map(a=>({...a}));moves=s.moves;lives=s.lives;clearedCount=s.clearedCount;coins-=2;hintId=null;render();persist();$('message').textContent='Last successful move undone. Cost: 2 coins.'};
+ $('hintBtn').onclick=()=>{if(cleared||coins<5)return;let a=arrows.find(q=>q.alive&&isClear(q));if(!a){$('message').textContent='No clear arrow found.';return}coins-=5;hintId=a.id;render();persist();$('message').textContent='Hint: try the glowing arrow. Cost: 5 coins.';setTimeout(()=>{if(hintId===a.id){hintId=null;render()}},2200)};
+ $('shuffleBtn').onclick=()=>{if(cleared||coins<10)return;snapshot();coins-=10;let live=arrows.filter(a=>a.alive);live.forEach(a=>{let dirs=Object.keys(DIRS);a.dir=dirs[Math.floor(Math.random()*4)]});hintId=null;render();persist();$('message').textContent='Arrow directions randomized. Cost: 10 coins. Find a new escape route.'};
+ $('restartBtn').onclick=()=>makeLevel(level);
+ $('tutorialBtn').onclick=()=>showOnly('tutorialPanel');$('tutorialDone').onclick=()=>{localStorage.setItem('ae_tutorial_seen','1');showOnly('gamePanel')};
+ $('gameTab').onclick=()=>showOnly('gamePanel');$('leaderTab').onclick=()=>{renderLeaderboard();showOnly('leaderPanel')};$('profileTab').onclick=()=>{renderProfile();showOnly('profilePanel')};$('backGameBtn').onclick=()=>showOnly('gamePanel');
+ function getLocalPlayers(){let arr=saved('ae_players_v2')||[];if(profile){let i=arr.findIndex(p=>p.name.toLowerCase()===profile.name.toLowerCase()&&p.country===profile.country);let item={name:profile.name,country:profile.country,level,clearedCount,coins};if(i>=0)arr[i]=item;else arr.push(item);localStorage.setItem('ae_players_v2',JSON.stringify(arr))}return arr.sort((a,b)=>(b.level-a.level)||(b.clearedCount-a.clearedCount)||(b.coins-a.coins))}
+ function renderLeaderboard(){let list=getLocalPlayers();$('leaderboardList').innerHTML='';if(!list.length){$('leaderboardList').textContent='No scores yet.';return}list.slice(0,50).forEach((p,i)=>{let row=document.createElement('div');row.className='rankrow';let rank=document.createElement('div');rank.className='rank';rank.textContent='#'+(i+1);let who=document.createElement('div');who.innerHTML='<div></div><div class="playercountry"></div>';who.children[0].textContent=p.name;who.children[1].textContent='🌐 '+p.country;let score=document.createElement('div');score.className='score';score.textContent='Lv '+p.level;row.append(rank,who,score);$('leaderboardList').append(row)})}
+ function renderProfile(){if(!profile)return;$('profileInfo').innerHTML='';let rows=[['Player',profile.name],['Country',profile.country],['Current level',level],['Arrows cleared',clearedCount],['Coins',coins]];rows.forEach(([k,v])=>{let r=document.createElement('div');r.className='rankrow';let a=document.createElement('div');a.className='playercountry';a.textContent=k;let b=document.createElement('strong');b.textContent=v;r.append(a,b);$('profileInfo').append(r)})}
+ $('editProfileBtn').onclick=()=>{let n=prompt('New player name',profile.name);if(n===null)return;if(!n.trim()){alert('Name cannot be empty.');return}let c=prompt('Country (type your country name)',profile.country);if(c===null||!c.trim())return;profile.name=n.trim().slice(0,18);profile.country=c.trim().slice(0,40);$('profilePill').textContent=profile.name;persist();renderProfile();renderLeaderboard()};
+ $('logoutBtn').onclick=()=>{persist();profile=null;$('gameArea').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('profilePill').textContent='Guest player';showOnly('gamePanel')};
+ function showAnnouncement(){let msg=localStorage.getItem(KEYS.announcement)||'';$('announcementBanner').classList.toggle('hidden',!msg);$('announcementBanner').textContent=msg?'📣 Announcement: '+msg:''}
+ function renderAdminArrows(){let box=$('adminArrows');if(!box)return;box.innerHTML='';if(!arrows.length)return;arrows.forEach(a=>{let row=document.createElement('div');row.className='rankrow';let n=document.createElement('div');n.className='rank';n.textContent='#'+a.id;let info=document.createElement('div');info.textContent=`${DIRS[a.dir].glyph} ${a.dir.toUpperCase()} · row ${a.y+1}, col ${a.x+1}`;let state=document.createElement('div');state.className='tag';state.textContent=!a.alive?'escaped':isClear(a)?'clear':'blocked';row.append(n,info,state);row.onclick=()=>{selectedArrow=a.id;render();};box.append(row)})}
+ function renderAdminPlayers(){let box=$('adminPlayers');box.innerHTML='';let list=saved('ae_players_v2')||[];if(profile)list=getLocalPlayers();if(!list.length){box.textContent='No local player records yet.';return}list.forEach(p=>{let r=document.createElement('div');r.className='rankrow';let a=document.createElement('div');a.className='rank';a.textContent='•';let b=document.createElement('div');b.textContent=p.name+' · '+p.country;let c=document.createElement('div');c.className='score';c.textContent='Lv '+p.level;r.append(a,b,c);box.append(r)})}
+ function openAdmin(){adminMode=true;renderAdminPlayers();renderAdminArrows();showOnly('adminPanel')}
+ $('publishAnnouncement').onclick=()=>{let t=$('announcementText').value.trim();if(!t){$('adminMessage').textContent='Write an announcement first.';return}localStorage.setItem(KEYS.announcement,t);showAnnouncement();$('adminMessage').textContent='Announcement published in this browser.'};
+ $('clearAnnouncement').onclick=()=>{localStorage.removeItem(KEYS.announcement);$('announcementText').value='';showAnnouncement();$('adminMessage').textContent='Announcement cleared in this browser.'};
+ $('adminRefresh').onclick=()=>{renderAdminPlayers();renderAdminArrows();$('adminMessage').textContent='Lists refreshed.'};
+ $('adminLogout').onclick=()=>{adminMode=false;showOnly('gamePanel')};
+ $('adminLoginBtn').onclick=()=>{if($('adminPassword').value===ADMIN_PASSWORD){$('adminPassword').value='';$('adminLoginMessage').textContent='';openAdmin()}else{$('adminLoginMessage').textContent='Incorrect password.'}};
+ $('adminCancelBtn').onclick=()=>{showOnly('gamePanel');$('adminPassword').value=''};
+ // Hidden access: tap the tiny version label five times, then enter password.
+ let taps=0,tapTimer; $('versionTap').addEventListener('click',()=>{taps++;clearTimeout(tapTimer);tapTimer=setTimeout(()=>taps=0,1600);if(taps>=5){taps=0;$('adminLoginPanel').classList.remove('hidden');showOnly('adminLoginPanel')}});
+ document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='a'){showOnly('adminLoginPanel')}});
+ // Restore last profile automatically for a convenient local prototype.
+ const oldProfile=saved(KEYS.profile);
+ if(oldProfile&&oldProfile.name&&oldProfile.country){startProfile(oldProfile.name,oldProfile.country)}else{$('playerName').focus()}
+})();
+</script>
+</body>
+</html>
